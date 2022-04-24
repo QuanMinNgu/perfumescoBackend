@@ -66,11 +66,11 @@ class productController{
         try{
             const {title,categary,sold,origin,description,fragrant,born,volume,price,percent,
                 reducePrice,reduce,smallcontent,concentration,brand,timeuse,
-                howtouse,hot} = req.body;
+                howtouse,hot,bestsell,image} = req.body;
             const product = new Product({
                 title,categary,sold,origin,description,fragrant,born,volume,price,percent,
                 reducePrice,reduce,smallcontent,concentration,brand,timeuse,
-                howtouse,hot
+                howtouse,hot,bestsell,image
             });
             await product.save();
             return res.status(200).json({msg:`Tạo thành công ${title}.`});

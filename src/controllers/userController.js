@@ -89,7 +89,7 @@ class userController{
             const refreshToken = createRefreshToken(user);
             res.cookie("refreshToken",refreshToken,{
                 httpOnly:true,
-                secure:false,
+                secure:true,
                 path:"/",
                 sameSite:"Strict"
             });
@@ -181,7 +181,7 @@ class userController{
                 const newRefreshToken = createRefreshToken(newUser);
                 res.cookie("refreshToken",newRefreshToken,{
                     httpOnly:true,
-                    secure:false,
+                    secure:true,
                     path:"/",
                     sameSite:"Strict"
                 });

@@ -13,8 +13,7 @@ const productSchema = new schema({
         required:true
     },
     categary:{
-        type:String,
-        required:true
+        type:String
     },
     sold:{
         type:Number,
@@ -38,14 +37,14 @@ const productSchema = new schema({
         default:0
     },
     price:{
-        type:Number,
+        type:String,
         required:true
     },
     percent:{
         type:Number
     },
     reducePrice:{
-        type:Number,
+        type:String,
         default:0
     },
     reduce:{
