@@ -4,7 +4,6 @@ const middleWareController = require('../controllers/middleWareController');
 
 router.post('/register',userController.register);
 router.post('/login',userController.login);
-router.post('/refresh',userController.refreshToken);
 router.get('/getall',middleWareController.verifyAdmin,userController.getUsers);
 router.get('/getone/:id',middleWareController.verifyAdmin,userController.adminGetOne);
 router.delete('/delete/:id',middleWareController.verifyAdmin,userController.deleteUser);

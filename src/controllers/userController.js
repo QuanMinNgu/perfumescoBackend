@@ -86,13 +86,6 @@ class userController{
                 return res.status(400).json({msg:"Mật khẩu sai."});
             }
             const accessToken = createAccessToken(user);
-            const refreshToken = createRefreshToken(user);
-            res.cookie("refreshToken",refreshToken,{
-                httpOnly:true,
-                secure:true,
-                path:"/",
-                sameSite:"Strict"
-            });
             res.status(200).json({accessToken,msg:"Đăng nhập thành công.",name:user.name,image:user.image,rule:user.rule});
         }
         catch(err){
@@ -163,35 +156,6 @@ class userController{
         }
     }
 
-    async refreshToken(req,res){
-        try{
-            const refreshToken = req.cookies.refreshToken;
-            if(!refreshToken){
-                return res.status(400).json({msg:"Vui lòng đăng nhập."});
-            }
-            jwt.verify(refreshToken,process.env.REFRESHTOKEN,async (err,user) => {
-                if(err){
-                    return res.status(400).json({msg:"Vui lòng đăng nhập."});
-                }
-                const newUser = await User.findById(user.id);
-                if(!newUser){
-                    return res.status(400).json({msg:"Tài khoản không hề tồn tại."});
-                }
-                const accessToken = createAccessToken(newUser);
-                const newRefreshToken = createRefreshToken(newUser);
-                res.cookie("refreshToken",newRefreshToken,{
-                    httpOnly:true,
-                    secure:true,
-                    path:"/",
-                    sameSite:"Strict"
-                });
-                return res.status(200).json({accessToken});
-            })
-        }
-        catch(err){
-            return res.status(500).json({msg:err.message});
-        }
-    }
 
     async getOne(req,res){
         try{
@@ -230,9 +194,6 @@ class userController{
     }
 }
 function createAccessToken(user){
-    return jwt.sign({id:user._id},process.env.ACCESSTOKEN,{expiresIn:"1h"});
-}
-function createRefreshToken(user){
-    return jwt.sign({id:user._id},process.env.REFRESHTOKEN,{expiresIn:"3d"});
+    return jwt.sign({id:user._id},process.env.ACCESSTOKEN,{expiresIn:"1d"});
 }
 module.exports = new userController;
