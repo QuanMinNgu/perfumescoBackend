@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const router = require('./routes/index');
 
 app.use(express.json());
-app.use(cors({credentials: true, origin: 'https://sellceoperfume.netlify.app'}));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(cookieParser());
 
 const http = require('http').createServer(app);
