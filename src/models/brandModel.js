@@ -8,6 +8,9 @@ const brandSchema = new schema({
         type:String,
         required:true
     },
+    image:{
+        type:String
+    },
     slug:{
         type:String,
         slug:"name",
