@@ -3,8 +3,8 @@ const Brand = require('../models/brandModel');
 class brandController{
     async getBrand(req,res){
         try{
-            const brand = await Brand.find();
-            return res.status(200).json({brand});
+            const brands = await Brand.find();
+            return res.status(200).json({brands});
         }
         catch(err){
             return res.status(500).json({msg:err.message});

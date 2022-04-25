@@ -194,6 +194,6 @@ class userController{
     }
 }
 function createAccessToken(user){
-    return jwt.sign({id:user._id},process.env.ACCESSTOKEN,{expiresIn:"1d"});
+    return jwt.sign({id:user._id},process.env.ACCESSTOKEN,{expiresIn:"3d"});
 }
 module.exports = new userController;

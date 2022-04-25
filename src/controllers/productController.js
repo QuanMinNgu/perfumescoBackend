@@ -98,7 +98,7 @@ class productController{
         try{
             const {title,categary,sold,origin,description,fragrant,born,volume,price,percent,
                 reducePrice,reduce,smallcontent,concentration,brand,timeuse,
-                howtouse,hot} = req.body;
+                howtouse,hot,image,bestsell} = req.body;
             const product = await Product.findOne({slug:req.params.slug});
             if(!product){
                 return res.status(400).json({msg:"Sản phẩm không hề tồn tại."});
@@ -106,7 +106,7 @@ class productController{
             await Product.findOneAndUpdate({slug:req.params.slug},{
                 title,categary,sold,origin,description,fragrant,born,volume,price,percent,
                 reducePrice,reduce,smallcontent,concentration,brand,timeuse,
-                howtouse,hot
+                howtouse,hot,image,bestsell
             });
             res.status(200).json({msg:`Update ${product.title} thành công.`});
         }
