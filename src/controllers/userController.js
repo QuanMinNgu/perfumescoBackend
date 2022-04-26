@@ -86,7 +86,7 @@ class userController{
                 return res.status(400).json({msg:"Mật khẩu sai."});
             }
             const accessToken = createAccessToken(user);
-            res.status(200).json({accessToken,msg:"Đăng nhập thành công.",name:user.name,image:user.image,rule:user.rule});
+            res.status(200).json({accessToken,msg:"Đăng nhập thành công.",name:user.name,image:user.image,rule:user.rule,id:user._id});
         }
         catch(err){
             return res.status(500).json({msg:err.message});
