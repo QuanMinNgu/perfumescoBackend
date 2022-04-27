@@ -28,7 +28,16 @@ const userSchema = new schema({
         default:"user"
     },
     cart:{
-        type:Array,
+        type:[{
+            user_cart:{
+                type:mongoose.Types.ObjectId,
+                ref:"Products"
+            },
+            count:{
+                type:Number,
+                default:1
+            }
+        }],
         default:[]
     }
 },{

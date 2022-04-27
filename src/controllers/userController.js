@@ -10,7 +10,6 @@ class apiRequest{
 
     sorting(){
         const sort = this.queryString.sort || '-createdAt';
-
         this.query = this.query.sort(sort);
         return this;
     }
@@ -146,7 +145,7 @@ class userController{
 
     async getUsers(req,res){
         try{
-            const api = new apiRequest(User.find(),req.query).sorting().paginating().filtering().searching();
+            const api = new apiRequest(User.find().select('-password'),req.query).sorting().paginating().filtering().searching();
             const user = await api.query;
             const count = await User.count(api.query.limit(null).skip(null));
             return res.status(200).json({count,user});
@@ -159,7 +158,7 @@ class userController{
 
     async getOne(req,res){
         try{
-            const user = await User.findById(req.user.id);
+            const user = await User.findById(req.user.id).populate('cart.user_cart');
             if(!user){
                 return res.status(400).json({msg:"Tài khoản không hề tồn tại."});
             }
@@ -172,9 +171,13 @@ class userController{
     
     async adminGetOne(req,res){
         try{
-            const user = await User.findById(req.params.id);
+            const user = await User.findById(req.params.id).select('-password').populate('cart.user_cart');
+            const newUser = await User.findById(req.user.id);
             if(!user){
                 return res.status(400).json({msg:"Tài khoản không tồn tại."});
+            }
+            if(newUser._id.toString() !== user._id.toString() && newUser.rule !== 'admin'){
+                return res.status(400).json({msg:"Bạn không thể làm việc này."});
             }
             res.status(200).json({user});
         }
@@ -187,6 +190,83 @@ class userController{
         try{
             res.clearCookie("refreshToken");
             res.status(200).json({msg:"Đăng xuất thành công."});
+        }
+        catch(err){
+            return res.status(500).json({msg:err.message});
+        }
+    }
+
+    async addCart(req,res){
+        try{
+            const {cart} = req.body;
+            const user = await User.findById(req.user.id);
+
+            const check = user.cart.every(item => item.user_cart.toString() !== cart.user_cart.toString());
+            if(!check){
+                return res.status(400).json({msg:"Bạn đã có sản phẩm này trong rỏ hàng."});
+            }
+            user.cart.push(cart);
+            await User.findByIdAndUpdate(req.user.id,{
+                cart:user.cart
+            });
+            res.status(200).json({msg:"Thêm thành công sản phẩm vào rỏ hàng của bạn."});
+        }
+        catch(err){
+            return res.status(500).json({msg:err.message});
+        }
+    }
+
+    async updateUser(req,res){
+        try{
+            const {name,image,address} = req.body;
+            const user = await User.findById(req.user.id);
+            if(!user){
+                return res.status(400).json({msg:"Tài khoản này không hề tồn tại."});
+            }
+            await User.findByIdAndUpdate(req.user.id,{
+                image,name,address
+            });
+            res.status(200).json({msg:"Cật Nhật Thành Công."});
+        }
+        catch(err){
+            return res.status(500).json({msg:err.message});
+        }
+    }
+
+    async replaceCart(req,res){
+        try{
+            const user = await User.findById(req.user.id);
+            if(!user){
+                return res.status(400).json({msg:"Tài khoản này không hề tồn tại."});
+            }
+            user.cart = user.cart.filter(item => item.user_cart.toString() !== req.params.id.toString());
+            await User.findByIdAndUpdate(req.user.id,{
+                cart:user.cart
+            });
+            res.status(200).json({msg:"Xóa khỏi rỏ hàng thành công."});
+        }
+        catch(err){
+            return res.status(500).json({msg:err.message});
+        }
+    }
+
+    async addCount(req,res){
+        try{
+            const {count} = req.body;
+            const user = await User.findById(req.user.id);
+            if(!user){
+                return res.status(400).json({msg:"Tài khoản này không hề tồn tại."});
+            }
+            user.cart = user.cart.map(item => {
+                if(item.user_cart._id.toString() === req.params.id.toString()){
+                    item.count = count;
+                }
+                return item;
+            })
+            await User.findByIdAndUpdate(req.user.id,{
+                cart:user.cart
+            });
+            res.status(200).json({msg:"Thành Công."});
         }
         catch(err){
             return res.status(500).json({msg:err.message});

@@ -8,14 +8,17 @@ const mongoose = require('mongoose');
 const router = require('./routes/index');
 const user = require('./models/userModel');
 const Comment = require('./models/comment');
+
+const url = "https://perfumesco.netlify.app";
+
 app.use(express.json());
-app.use(cors({credentials: true, origin: 'https://perfumesco.netlify.app'}));
+app.use(cors({credentials: true, origin: url}));
 app.use(cookieParser());
 
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
-      origin: "https://perfumesco.netlify.app",
+      origin: url,
       methods: ["GET", "POST"],
       allowedHeaders: ["my-custom-header"],
       credentials: true
