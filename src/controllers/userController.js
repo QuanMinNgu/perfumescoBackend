@@ -205,7 +205,7 @@ class userController{
             if(!check){
                 return res.status(400).json({msg:"Bạn đã có sản phẩm này trong rỏ hàng."});
             }
-            user.cart.push(cart);
+            user.cart.unshift(cart);
             await User.findByIdAndUpdate(req.user.id,{
                 cart:user.cart
             });

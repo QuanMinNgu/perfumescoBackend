@@ -10,6 +10,7 @@ const user = require('./models/userModel');
 const Comment = require('./models/comment');
 
 const url = "https://perfumesco.netlify.app";
+//const url = "http://localhost:3000";
 
 app.use(express.json());
 app.use(cors({credentials: true, origin: url}));
