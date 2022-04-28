@@ -127,6 +127,37 @@ class productController{
             return res.status(500).json({msg:err.message});
         }
     }
+
+    async getDetailProduct(req,res){
+        try{
+            const product = await Product.find().select('born concentration volume fragrant');
+
+            const born = [];
+            const volume = [];
+            const fragrant = [];
+            const concentration = [];
+
+            product.forEach(item => {
+                if(!born.includes(item.born)){
+                    born.push(item.born);
+                }
+                if(!concentration.includes(item.concentration)){
+                    concentration.push(item.concentration);
+                }
+                if(!volume.includes(item.volume)){
+                    volume.push(item.volume);
+                }
+                 if(!fragrant.includes(item.fragrant)){
+                    fragrant.push(item.fragrant);
+                }
+            })
+            res.status(200).json({born,concentration,volume,fragrant});
+        }
+        catch(err){
+            return res.status(500).json({msg:err.message});
+        }
+    }
+
 }
 
 module.exports = new productController;

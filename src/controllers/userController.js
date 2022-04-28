@@ -94,10 +94,14 @@ class userController{
 
     async changePassword(req,res){
         try{
-            const {password} = req.body;
+            const {password,oldpassword} = req.body;
             const user = await User.findById(req.user.id);
             if(!user){
                 return res.status(400).json({msg:"Bạn nên đăng nhập lại nếu có tài khoản."});
+            }
+            const valid = await bcrypt.compare(oldpassword,user.password);
+            if(!valid){
+                return res.status(400).json({msg:"Mật khẩu không chính xác."});
             }
             const hashed = await bcrypt.hash(password,12);
             await User.findByIdAndUpdate(user._id,{
@@ -117,7 +121,7 @@ class userController{
             if(!user){
                 return res.status(400).json({msg:"Tài khoản không hề tồn tại."});
             }
-            const password = 12345678;
+            const password = '12345678';
             const hashed = await bcrypt.hash(password,12);
             await User.findOneAndUpdate({email},{
                 password:hashed
@@ -267,6 +271,23 @@ class userController{
                 cart:user.cart
             });
             res.status(200).json({msg:"Thành Công."});
+        }
+        catch(err){
+            return res.status(500).json({msg:err.message});
+        }
+    }
+
+    async deleteAllCart(req,res){
+        try{
+            const user = await User.findById(req.user.id);
+            if(!user){
+                return res.status(400).json({msg:"Tài khoản này không hề tồn tại."});
+            }
+            user.cart = [];
+            await User.findByIdAndUpdate(req.user.id,{
+                cart:user.cart
+            });
+            res.status(200).json({msg:"Xóa hết rỏ hàng thành công."});
         }
         catch(err){
             return res.status(500).json({msg:err.message});

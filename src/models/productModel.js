@@ -37,7 +37,7 @@ const productSchema = new schema({
         default:0
     },
     price:{
-        type:String,
+        type:Number,
         required:true
     },
     percent:{
@@ -55,7 +55,7 @@ const productSchema = new schema({
         type:String,
     },
     concentration:{
-        type:Number
+        type:String
     },
     brand:{
         type:String

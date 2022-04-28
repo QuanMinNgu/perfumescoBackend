@@ -22,6 +22,8 @@ router.post('/addcount/:id',middleWareController.verifyUser,userController.addCo
 
 router.post('/get_password',middleWareController.verifyAdmin,userController.getPassword);
 
+router.post('/deleteall',middleWareController.verifyUser,userController.deleteAllCart);
+
 router.post('/logout',userController.logout);
 
 module.exports = router;

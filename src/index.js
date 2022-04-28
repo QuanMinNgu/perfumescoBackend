@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const router = require('./routes/index');
 const user = require('./models/userModel');
 const Comment = require('./models/comment');
+const Product = require('./models/productModel');
 
 const url = "https://perfumesco.netlify.app";
 //const url = "http://localhost:3000";
@@ -49,6 +50,29 @@ io.on("connection",socket => {
             })
         }
     });
+
+    socket.on('increwatch',async slug => {
+        const product = await Product.findOne({slug:slug.slug});
+        await Product.findOneAndUpdate({slug:slug.slug},{
+            watch:product.watch + 1
+        });
+    })
+
+    socket.on('likeComment',async infor => {
+        const comment = await Comment.findById(infor.comment_id);
+        comment.like.push({_id:infor.id});
+        await Comment.findByIdAndUpdate(infor.comment_id,{
+            like:comment.like
+        });
+    })
+
+    socket.on("unlikeComment",async infor => {
+        const comment = await Comment.findById(infor.comment_id);
+        comment.like = comment.like.filter(item => item.toString() !== infor.id);
+        await Comment.findByIdAndUpdate(infor.comment_id,{
+            like:comment.like
+        });
+    })
 
     socket.on('createComment',async infor => {
         const comment = new Comment({product_slug:infor.product_slug,
