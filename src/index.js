@@ -60,10 +60,13 @@ io.on("connection",socket => {
 
     socket.on('likeComment',async infor => {
         const comment = await Comment.findById(infor.comment_id);
-        comment.like.push({_id:infor.id});
-        await Comment.findByIdAndUpdate(infor.comment_id,{
-            like:comment.like
-        });
+        const check = comment.like.every(item => item.toString() !== infor.id);
+        if(check && infor.id){
+            comment.like.push({_id:infor.id});
+            await Comment.findByIdAndUpdate(infor.comment_id,{
+                like:comment.like
+            });
+        }
     })
 
     socket.on("unlikeComment",async infor => {
